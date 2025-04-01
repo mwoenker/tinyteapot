@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "outDir": "assets/scripts",
+    "module": "es2022",
+    "alwaysStrict": true,
+    "strict": true,
+    "sourceMap": true,
+    "lib": ["dom", "esnext"],
+  },
+  "include": [
+    "src"
+  ]
+}

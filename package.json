@@ -1,0 +1,23 @@
+{
+  "name": "poly",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc --watch",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "mkdir -p build/scripts && cp assets/index.html build && esbuild src/index.ts --bundle --outfile=build/scripts/index.js",
+    "bundle-min": "mkdir -p build/scripts && cp assets/index.html build && esbuild src/index.ts --bundle --minify --outfile=build/scripts/index.js"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "description": "",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "esbuild": "^0.25.2",
+    "eslint": "^9.19.0",
+    "prettier": "^3.5.0",
+    "typescript": "^5.7.3"
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+}
