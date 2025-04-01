@@ -1,4 +1,4 @@
-import { Mesh, MeshLine } from "./Mesh.js";
+import { Mesh, MeshLine } from "./mesh.js";
 import { v3add, v3scale, Vec2, Vec3 } from "./vector.js";
 
 type Corners = [[Vec3, Vec3], [Vec3, Vec3]];

@@ -6,13 +6,10 @@ import { Vec3 } from "./vector.js";
 
 export class Controller {
   running = false;
-  private rasterizer: Rasterizer;
   private theta = 0;
   private meshes: Mesh[];
 
   constructor(private canvas: HTMLCanvasElement) {
-    this.rasterizer = new Rasterizer(canvas);
-    this.canvas = canvas;
     const points: Vec3[] = [
       [1.4, 0, 2.4],
       [1.4, -0.784, 2.4],
@@ -507,18 +504,31 @@ export class Controller {
       ).mesh(divisions, divisions),
     );
     this.meshes.forEach((m) => m.points.forEach((p) => (p[2] -= 1.2)));
+    console.log(
+      "LINES",
+      this.meshes.reduce((lineCount, mesh) => lineCount + mesh.lines.length, 0),
+    );
   }
 
   renderFrame() {
-    this.rasterizer.clear([0, 0, 0]);
+    const context = this.canvas.getContext("2d");
+    if (!context) {
+      throw new Error("no context");
+    }
+    context.fillStyle = "#000";
+    context.beginPath();
+    context.rect(0, 0, this.canvas.width, this.canvas.height);
+    context.fill();
+    context.strokeStyle = "#fff";
+    context.beginPath();
     for (const mesh of this.meshes) {
       const xRotation = Rotation.rotateAroundX(0.3 * this.theta);
       const yRotation = Rotation.rotateAroundY(this.theta);
-      const cornersRotated = mesh.points.map((corner) =>
+      const pointsRotated = mesh.points.map((corner) =>
         xRotation.transform(yRotation.transform(corner)),
       );
 
-      const cornersProjected: Vec3[] = cornersRotated.map((corner) => {
+      const pointsProjected: Vec3[] = pointsRotated.map((corner) => {
         const z = corner[2] - 5; // push away from camera
         const x = corner[0] / z;
         const y = corner[1] / z;
@@ -528,31 +538,17 @@ export class Controller {
         return [halfWidth + halfWidth * x, halfHeight + halfWidth * y, 1 / z];
       });
 
-      const transformedMesh: Mesh = {
-        points: cornersProjected,
-        lines: mesh.lines,
-      };
+      const { lines } = mesh;
 
-      //const color = colorGradient(this.theta / 9);
-      // const color = colorGradient(i++ / 6);
-      const color: Vec3 = [255, 255, 255];
-      for (let i = 0; i < transformedMesh.lines.length; ++i) {
-        const line = transformedMesh.lines[i];
-        this.rasterizer.line(
-          [
-            transformedMesh.points[line.start][0],
-            transformedMesh.points[line.start][1],
-          ],
-          [
-            transformedMesh.points[line.end][0],
-            transformedMesh.points[line.end][1],
-          ],
-          color,
-        );
+      for (let i = 0; i < lines.length; ++i) {
+        const { start, end } = lines[i];
+        const startPt = pointsProjected[start];
+        const endPt = pointsProjected[end];
+        context.moveTo(startPt[0], startPt[1]);
+        context.lineTo(endPt[0], endPt[1]);
       }
     }
-
-    this.rasterizer.finishFrame();
+    context.stroke();
   }
 
   update() {
