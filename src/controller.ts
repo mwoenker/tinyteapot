@@ -1,9 +1,8 @@
-import { colorGradient, rgbStr } from "./color.js";
-import { Mesh } from "./Mesh.js";
-import { CubicPatch } from "./Patch.js";
+import { Mesh } from "./mesh.js";
+import { CubicPatch } from "./patch.js";
 import { Rasterizer } from "./rasterizer.js";
 import { Rotation } from "./transform.js";
-import { Vec2, Vec3 } from "./vector.js";
+import { Vec3 } from "./vector.js";
 
 export class Controller {
   running = false;
@@ -512,15 +511,6 @@ export class Controller {
 
   renderFrame() {
     this.rasterizer.clear([0, 0, 0]);
-
-    const corners: Vec3[] = [
-      [-1, -1, 0],
-      [1, -1, 0],
-      [1, 1, 0],
-      [-1, 1, 0],
-    ];
-
-    let i = 0;
     for (const mesh of this.meshes) {
       const xRotation = Rotation.rotateAroundX(0.3 * this.theta);
       const yRotation = Rotation.rotateAroundY(this.theta);
@@ -534,7 +524,7 @@ export class Controller {
         const y = corner[1] / z;
         let halfWidth = this.canvas.width / 2;
         let halfHeight = this.canvas.height / 2;
-        // half assed perspective projection assuming 90deg horizontal fov, plz fix
+        // half assed perspective projection assuming 90deg horizontal fov
         return [halfWidth + halfWidth * x, halfHeight + halfWidth * y, 1 / z];
       });
 
@@ -561,14 +551,6 @@ export class Controller {
         );
       }
     }
-    // this.rasterizer.triangle(corners[0], corners[1], corners[2], color);
-    // this.rasterizer.triangle(corners[2], corners[3], corners[0], color);
-
-    // for (let i = 0; i < 640; ++i) {
-    //   const color = colorGradient(i / 640);
-    //   this.rasterizer.triangle([i, 300], [i + 1, 300], [i + 1, 600], color);
-    //   this.rasterizer.triangle([i + 1, 600], [i, 600], [i, 300], color);
-    // }
 
     this.rasterizer.finishFrame();
   }
