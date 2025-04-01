@@ -1,8 +1,8 @@
 import { Mesh } from "./mesh.js";
 import { CubicPatch } from "./patch.js";
-import { Rasterizer } from "./rasterizer.js";
 import { Rotation } from "./transform.js";
 import { Vec3 } from "./vector.js";
+import { die } from "./die";
 
 export class Controller {
   running = false;
@@ -504,16 +504,12 @@ export class Controller {
       ).mesh(divisions, divisions),
     );
     this.meshes.forEach((m) => m.points.forEach((p) => (p[2] -= 1.2)));
-    console.log(
-      "LINES",
-      this.meshes.reduce((lineCount, mesh) => lineCount + mesh.lines.length, 0),
-    );
   }
 
   renderFrame() {
     const context = this.canvas.getContext("2d");
     if (!context) {
-      throw new Error("no context");
+      die("context");
     }
     context.fillStyle = "#000";
     context.beginPath();

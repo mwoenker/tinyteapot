@@ -1,9 +1,10 @@
 import { Controller } from "./controller.js";
+import { die } from "./die";
 
 window.addEventListener("load", () => {
   const canvas = document.getElementById("screen");
   if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
-    throw new Error("canvas not found");
+    die("canvas");
   }
   const controller = new Controller(canvas);
   controller.run();

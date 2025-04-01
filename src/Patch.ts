@@ -1,6 +1,5 @@
 import { Mesh, MeshLine } from "./mesh.js";
 import { v3add, v3scale, Vec2, Vec3 } from "./vector.js";
-
 type Corners = [[Vec3, Vec3], [Vec3, Vec3]];
 
 function interp(s: number, t: number, corners: Corners): Vec3 {
@@ -22,9 +21,6 @@ function bezier(
   controlPoints: Vec3[][],
 ): Vec3 {
   const [s, t] = parameter;
-  if (order < 0) {
-    throw new Error("Invalid order");
-  }
   if (order === 0) {
     return controlPoints[base[0]][base[1]];
   }
@@ -41,21 +37,9 @@ function bezier(
 }
 
 export class CubicPatch {
-  constructor(private controlPoints: Vec3[][]) {
-    if (controlPoints.length !== 4) {
-      throw new Error("Invalid patch dimension");
-    }
-    for (let row = 0; row < 4; ++row) {
-      if (controlPoints[row].length !== 4) {
-        throw new Error("Invalid patch dimension");
-      }
-    }
-  }
+  constructor(private controlPoints: Vec3[][]) {}
 
   sample(s: number, t: number) {
-    if (s < 0 || s > 1 || t < 0 || t > 1) {
-      throw new Error("Invalid patch parameter");
-    }
     return bezier(3, [s, t], [0, 0], this.controlPoints);
   }
 
@@ -70,9 +54,6 @@ export class CubicPatch {
       const s = row / sSubdivisions;
       for (let col = 0; col <= tSubdivisions; ++col) {
         const t = col / tSubdivisions;
-        if (points.length !== pointIndex(row, col)) {
-          throw new Error("we don't know how to compute indexes");
-        }
         points.push(this.sample(s, t));
       }
     }
