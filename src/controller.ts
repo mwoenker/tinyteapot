@@ -2,7 +2,7 @@ import { Mesh } from "./mesh.js";
 import { CubicPatch } from "./patch.js";
 import { Rotation } from "./transform.js";
 import { Vec3 } from "./vector.js";
-import { die } from "./die";
+import { die } from "./die.js";
 
 export class Controller {
   running = false;
@@ -497,7 +497,7 @@ export class Controller {
         [95, 94, 93, 92],
       ],
     ];
-    const divisions = 3;
+    const divisions = 12;
     this.meshes = patches.map((controlPoints) =>
       new CubicPatch(
         controlPoints.map((row) => row.map((idx) => points[idx])),
@@ -528,8 +528,8 @@ export class Controller {
         const z = corner[2] - 5; // push away from camera
         const x = corner[0] / z;
         const y = corner[1] / z;
-        let halfWidth = this.canvas.width / 2;
-        let halfHeight = this.canvas.height / 2;
+        const halfWidth = this.canvas.width / 2;
+        const halfHeight = this.canvas.height / 2;
         // half assed perspective projection assuming 90deg horizontal fov
         return [halfWidth + halfWidth * x, halfHeight + halfWidth * y, 1 / z];
       });

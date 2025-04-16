@@ -1,5 +1,5 @@
 import { Controller } from "./controller.js";
-import { die } from "./die";
+import { die } from "./die.js";
 
 window.addEventListener("load", () => {
   const canvas = document.getElementById("screen");
@@ -13,4 +13,10 @@ window.addEventListener("load", () => {
       controller.stop();
     }
   });
+  const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+  window.addEventListener("resize", resize);
+  resize();
 });
