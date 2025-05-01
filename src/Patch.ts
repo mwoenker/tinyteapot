@@ -36,48 +36,44 @@ function bezier(
   ]);
 }
 
-export class CubicPatch {
-  constructor(private controlPoints: Vec3[][]) {}
+export function cubicPatchToMesh(
+  controlPoints: Vec3[][],
+  sSubdivisions: number,
+  tSubdivisions: number,
+): Mesh {
+  const pointIndex = (row: number, col: number): number =>
+    row * (tSubdivisions + 1) + col;
 
-  sample(s: number, t: number) {
-    return bezier(3, [s, t], [0, 0], this.controlPoints);
-  }
+  const points: Vec3[] = [];
+  const lines: MeshLine[] = [];
 
-  mesh(sSubdivisions: number, tSubdivisions: number): Mesh {
-    const pointIndex = (row: number, col: number): number =>
-      row * (tSubdivisions + 1) + col;
-
-    const points: Vec3[] = [];
-    const lines: MeshLine[] = [];
-
-    for (let row = 0; row <= sSubdivisions; ++row) {
-      const s = row / sSubdivisions;
-      for (let col = 0; col <= tSubdivisions; ++col) {
-        const t = col / tSubdivisions;
-        points.push(this.sample(s, t));
-      }
-    }
-
-    // row lines
-    for (let row = 0; row <= sSubdivisions; ++row) {
-      for (let col = 0; col < tSubdivisions; ++col) {
-        lines.push({
-          start: pointIndex(row, col),
-          end: pointIndex(row, col + 1),
-        });
-      }
-    }
-
-    // t lines
+  for (let row = 0; row <= sSubdivisions; ++row) {
+    const s = row / sSubdivisions;
     for (let col = 0; col <= tSubdivisions; ++col) {
-      for (let row = 0; row < sSubdivisions; ++row) {
-        lines.push({
-          start: pointIndex(row, col),
-          end: pointIndex(row + 1, col),
-        });
-      }
+      const t = col / tSubdivisions;
+      points.push(bezier(3, [s, t], [0, 0], controlPoints));
     }
-
-    return { lines, points };
   }
+
+  // row lines
+  for (let row = 0; row <= sSubdivisions; ++row) {
+    for (let col = 0; col < tSubdivisions; ++col) {
+      lines.push({
+        start_: pointIndex(row, col),
+        end_: pointIndex(row, col + 1),
+      });
+    }
+  }
+
+  // column lines
+  for (let col = 0; col <= tSubdivisions; ++col) {
+    for (let row = 0; row < sSubdivisions; ++row) {
+      lines.push({
+        start_: pointIndex(row, col),
+        end_: pointIndex(row + 1, col),
+      });
+    }
+  }
+
+  return { lines_: lines, points_: points };
 }

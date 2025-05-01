@@ -1,11 +1,11 @@
 import { Vec3 } from "./vector";
 
 export interface MeshLine {
-  readonly start: number;
-  readonly end: number;
+  readonly start_: number;
+  readonly end_: number;
 }
 
 export interface Mesh {
-  readonly lines: ReadonlyArray<MeshLine>;
-  readonly points: ReadonlyArray<Vec3>;
+  readonly lines_: ReadonlyArray<MeshLine>;
+  readonly points_: ReadonlyArray<Vec3>;
 }

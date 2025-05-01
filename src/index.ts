@@ -7,10 +7,10 @@ window.addEventListener("load", () => {
     die("canvas");
   }
   const controller = new Controller(canvas);
-  controller.run();
+  controller.run_();
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      controller.stop();
+      controller.stop_();
     }
   });
   const resize = () => {
