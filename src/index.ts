@@ -1,4 +1,4 @@
-import { Controller } from "./controller.js";
+import { makeController } from "./controller.js";
 import { die } from "./die.js";
 
 window.addEventListener("load", () => {
@@ -7,7 +7,7 @@ window.addEventListener("load", () => {
     //die("canvas");
     die();
   }
-  const controller = new Controller(canvas);
+  const controller = makeController(canvas);
   controller.run_();
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
