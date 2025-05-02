@@ -2,47 +2,39 @@ import { Mesh } from "./mesh.js";
 import { cubicPatchToMesh } from "./patch.js";
 import { Vec3 } from "./vector.js";
 
-const teapotPointsFlatEncoded =
-  'C8AC2A>-A8-AC8BC2B>-B8-BD8BD2BD8AD1A?,A8,A2-A-2A-8A2-B-2B-8B1,A,1A,8A->A2CA8CA->B2CB8CB2DB8DB,?A1DA8DA>CAC>A>CBC>B>DBD>B?DAD?AF8=F0=@*=8*=H89H/9A(98(9H85H/5A(58(50*=*0=*8=/(9(/9(89/(5(/5(85*@=0F=8F=(A9/H98H9(A5/H58H5@F=F@=AH9HA9AH5HA5H82H/2A(28(2D80D10?,08,0D8/D1/?,/8,//(2(/2(821,0,10,801,/,1/,8/(A2/H28H2,?01D08D0,?/1D/8D/AH2HA2?D0D?0?D/D?/+8>+6>,6@,8@&8>&6>$6@$8@"8>"6> 6@ 8@"8<"6< 6< 8<,:@+:>$:@&:> :@":> :<":<"8;"6; 69 89$87$67#66#86(65)63)83 :9":;#:6$:7):3(:5F89F39F33F83M89M39Q35Q85J8?J6?K6>K8>N8AN6AR6AR8AF=3F=9Q=5M=9K:>J:?R:AN:AN8BN6BT6BT8BO8BO7BT7BN7AR7AT:BN:BT9BO9BR9AN9A88G>8G>4G<2G82G88E:8D:7D96D86D42G24G28G76D67D68D2<G4>G8>G69D7:D8:D<>G><G9:D:9D;8B;6B:5B85BB8BB2B>.B8.BB8AB2A>.A8.A65B56B58B2.B.2B.8B2.A.2A.8A5:B6;B8;B.>B2BB8BB.>A2BA8BA:;B;:B>BBB>B>BAB>A88.C8.C>.>C.8C.2C.->.-8.-2.2-.8-.>-.C2.';
-
-const teapotPointsFlat = [];
-for (let i = 0; i < teapotPointsFlatEncoded.length; ++i) {
-  teapotPointsFlat.push(teapotPointsFlatEncoded.charCodeAt(i) - 56);
+// decodes string containing chars between space and ~, and returns array of
+// numbers between 0 and 94
+function decode(data: string): number[] {
+  return data.split("").map((c) => c.charCodeAt(0) - 32);
 }
 
-const teapotPatchIndexesFlat = [
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 6, 7, 10, 11, 12, 13, 3, 14, 15, 16, 7, 17, 18,
-  19, 7, 17, 18, 19, 13, 20, 21, 22, 16, 23, 24, 25, 19, 26, 27, 28, 19, 26, 29,
-  30, 22, 31, 32, 33, 25, 34, 35, 0, 28, 36, 37, 4, 30, 38, 39, 8, 33, 40, 41,
-  10, 10, 11, 12, 13, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 13, 20,
-  21, 22, 45, 54, 55, 56, 49, 57, 58, 59, 53, 60, 61, 62, 22, 31, 32, 33, 56,
-  63, 64, 65, 59, 66, 67, 68, 62, 69, 70, 71, 33, 40, 41, 10, 65, 72, 73, 42,
-  68, 74, 75, 46, 71, 76, 77, 50, 50, 51, 52, 53, 78, 79, 80, 81, 82, 83, 84,
-  85, 86, 87, 88, 89, 53, 60, 61, 62, 81, 90, 91, 92, 85, 93, 94, 95, 89, 96,
-  97, 98, 62, 69, 70, 71, 92, 99, 100, 101, 95, 102, 103, 104, 98, 105, 106,
-  107, 71, 76, 77, 50, 101, 108, 109, 78, 104, 110, 111, 82, 107, 112, 113, 86,
-  114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128,
-  129, 117, 130, 131, 114, 121, 132, 133, 118, 125, 134, 135, 122, 129, 136,
-  137, 126, 126, 127, 128, 129, 138, 139, 140, 141, 142, 143, 144, 145, 62, 146,
-  147, 148, 129, 136, 137, 126, 141, 149, 150, 138, 145, 151, 152, 142, 148,
-  153, 154, 62, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167,
-  168, 169, 170, 158, 171, 172, 155, 162, 173, 174, 159, 166, 175, 176, 163,
-  170, 177, 178, 167, 167, 168, 169, 170, 179, 180, 181, 182, 183, 184, 185,
-  182, 167, 186, 187, 170, 170, 177, 178, 167, 182, 188, 189, 179, 182, 190,
-  191, 183, 170, 192, 193, 167, 194, 194, 194, 194, 195, 196, 197, 198, 199,
-  199, 199, 199, 200, 201, 202, 203, 194, 194, 194, 194, 198, 204, 205, 206,
-  199, 199, 199, 199, 203, 207, 208, 209, 194, 194, 194, 194, 206, 210, 211,
-  212, 199, 199, 199, 199, 209, 213, 214, 215, 194, 194, 194, 194, 212, 216,
-  217, 195, 199, 199, 199, 199, 215, 218, 219, 200, 200, 201, 202, 203, 220,
-  221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 203, 207, 208, 209,
-  223, 232, 233, 234, 227, 235, 236, 237, 231, 238, 239, 240, 209, 213, 214,
-  215, 234, 241, 242, 243, 237, 244, 245, 246, 240, 247, 248, 249, 215, 218,
-  219, 200, 243, 250, 251, 220, 246, 252, 253, 224, 249, 254, 255, 228, 256,
-  256, 256, 256, 257, 258, 259, 260, 86, 113, 112, 107, 86, 113, 112, 107, 256,
-  256, 256, 256, 260, 261, 262, 263, 107, 106, 105, 98, 107, 106, 105, 98, 256,
-  256, 256, 256, 263, 264, 265, 266, 98, 97, 96, 89, 98, 97, 96, 89, 256, 256,
-  256, 256, 266, 267, 268, 257, 89, 88, 87, 86, 89, 88, 87, 86,
-];
+function encode(data: number[]): string {
+  return data.map((d) => String.fromCharCode(d + 32)).join("");
+}
+
+function undiff(start: number, diffs: number[]) {
+  const result = [start];
+  diffs.forEach((d, i) => {
+    result.push(result[i] + d);
+  });
+  return result;
+}
+
+const teapotPointsFlat = decode(
+  'C8AC2A>-A8-AC8BC2B>-B8-BD8BD2BD8AD1A?,A8,A2-A-2A-8A2-B-2B-8B1,A,1A,8A->A2CA8CA->B2CB8CB2DB8DB,?A1DA8DA>CAC>A>CBC>B>DBD>B?DAD?AF8=F0=@*=8*=H89H/9A(98(9H85H/5A(58(50*=*0=*8=/(9(/9(89/(5(/5(85*@=0F=8F=(A9/H98H9(A5/H58H5@F=F@=AH9HA9AH5HA5H82H/2A(28(2D80D10?,08,0D8/D1/?,/8,//(2(/2(821,0,10,801,/,1/,8/(A2/H28H2,?01D08D0,?/1D/8D/AH2HA2?D0D?0?D/D?/+8>+6>,6@,8@&8>&6>$6@$8@"8>"6> 6@ 8@"8<"6< 6< 8<,:@+:>$:@&:> :@":> :<":<"8;"6; 69 89$87$67#66#86(65)63)83 :9":;#:6$:7):3(:5F89F39F33F83M89M39Q35Q85J8?J6?K6>K8>N8AN6AR6AR8AF=3F=9Q=5M=9K:>J:?R:AN:AN8BN6BT6BT8BO8BO7BT7BN7AR7AT:BN:BT9BO9BR9AN9A88G>8G>4G<2G82G88E:8D:7D96D86D42G24G28G76D67D68D2<G4>G8>G69D7:D8:D<>G><G9:D:9D;8B;6B:5B85BB8BB2B>.B8.BB8AB2A>.A8.A65B56B58B2.B.2B.8B2.A.2A.8A5:B6;B8;B.>B2BB8BB.>A2BA8BA:;B;:B>BBB>B>BAB>A88.C8.C>.>C.8C.2C.->.-8.-2.2-.8-.>-.C2.',
+).map((x) => x - 24);
+
+const teapotPatchIndexValues = undiff(
+  -174,
+  decode('&,`)K""!!!""!!!$!""""!!!!!!!!""!!"!!!!!!!!!!!!!!!!"!!"!!!!.($=)X))'),
+);
+
+const teapotPatchIndexesFlat = undiff(
+  0,
+  decode(
+    "AAAAAAAAA>ABAAA8JAA9IAA6IAA<FAA<FAA<FAA9FBA:HAA:HA(YGA*WGA+VFA+@AAAZAAAAAAAAAAA%FAAUHAA;GAA<FAA%HAAUFAA<FAA<FAA&FA+]FA+WEA,VDA.@AAAVAAAAAAAAAAA'FAARHAA;GAA<FAA'FAASFAA<FAA<FAA'DA.\\FA+WEA,VDA.YAAAAAAAAAAAAAAA6LA3FJA4FHA5FFA7@AAAHAAAAAAA$^AA2FA7NGA6FEA8EDA#_AAAAAAAAAAAAAAA6LA3FJA4FHA5FFA7@AAAHAAAAAA>4RA3@FA7NEA8BGA:5TA/X@@@AAAAA@@@AAAA9@@@CEAA;@@@CCAA4@@@KCAA5@@@ICAA1@@@QCA0C@@@OBA2@AAAPAAAAAAAAAAA-CAAMHAA;GAA<FAA+CAARFAA<FAA<FAA)BA2[FA+WEA,VDA.Y@@@AAAA X?=1X?=`@@@CAAA\"??;H??;a@@@FAAA!??;H??;b@@@IAA7!???B???",
+  ).map((idx) => teapotPatchIndexValues[idx]),
+);
 
 const teapotPoints: Vec3[] = [];
 teapotPointsFlat.forEach((n, i) => {
