@@ -18,7 +18,7 @@ export class Controller {
   private shaderParameterLocations_: ShaderParameterLocations;
 
   constructor(private canvas_: HTMLCanvasElement) {
-    this.meshes_ = createTeapotMeshes(10);
+    this.meshes_ = createTeapotMeshes(15);
     const gl = this.canvas_.getContext("webgl2");
     if (!gl) {
       die("context");
