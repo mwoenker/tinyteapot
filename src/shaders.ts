@@ -17,7 +17,8 @@ function compileShader(
   const shader = gl.createShader(shaderType);
 
   if (!shader) {
-    die("createShader");
+    //die("createShader");
+    die();
   }
 
   gl.shaderSource(shader, programText);
@@ -27,7 +28,8 @@ function compileShader(
     //const log = gl.getShaderInfoLog(shader);
     gl.deleteShader(shader);
     //die(`Shader compile: ${log} `);
-    die("shader compile");
+    //die("shader compile");
+    die();
   }
 
   return shader;
@@ -40,7 +42,8 @@ function createShaderProgram(gl: WebGLRenderingContext): WebGLProgram {
   const program = gl.createProgram();
 
   if (!program) {
-    die("createShader");
+    //die("createShader");
+    die();
   }
 
   gl.attachShader(program, vertexShader);
@@ -49,7 +52,8 @@ function createShaderProgram(gl: WebGLRenderingContext): WebGLProgram {
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     //die(`create shader program: ${gl.getProgramInfoLog(program)} `);
-    die("create program");
+    //die("create program");
+    die();
   }
 
   return program;
@@ -62,7 +66,8 @@ function attribLocation(
 ) {
   const result = gl.getAttribLocation(program, name);
   if (result === -1) {
-    die("getAttribLocation");
+    //die("getAttribLocation");
+    die();
   }
   return result;
 }
@@ -74,7 +79,8 @@ function uniformLocation(
 ) {
   const result = gl.getUniformLocation(program, name);
   if (result === null) {
-    die("getUniformLocation");
+    //die("getUniformLocation");
+    die();
   }
   return result;
 }
@@ -82,7 +88,8 @@ function uniformLocation(
 function makeBuffer(gl: WebGLRenderingContext): WebGLBuffer {
   const buffer = gl.createBuffer();
   if (!buffer) {
-    die("makeBuffer");
+    //die("makeBuffer");
+    die();
   }
   return buffer;
 }
@@ -99,7 +106,8 @@ export function bindShaderAndGeometry(
   indexes: Uint16Array,
 ): ShaderParameterLocations {
   if (positions.length >= 1 << 16) {
-    die("Too many vertices");
+    //die("Too many vertices");
+    die();
   }
 
   const program = createShaderProgram(gl);

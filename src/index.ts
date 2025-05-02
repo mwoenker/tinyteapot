@@ -4,7 +4,8 @@ import { die } from "./die.js";
 window.addEventListener("load", () => {
   const canvas = document.getElementById("screen");
   if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
-    die("canvas");
+    //die("canvas");
+    die();
   }
   const controller = new Controller(canvas);
   controller.run_();
