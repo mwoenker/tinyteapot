@@ -2,6 +2,8 @@ import { Vec3 } from "./vector.js";
 
 export type GlMatrix = Float32Array;
 
+const { cos, sin } = Math;
+
 export function transformVec3ByGlMatrix(matrix: GlMatrix, v: Vec3): Vec3 {
   const extended = [...v, 1];
   const result: Vec3 = [0, 0, 0];
@@ -31,19 +33,19 @@ export function multiplyMatrices(
 }
 
 export function rotateAroundX(angle: number): GlMatrix {
-  const s = Math.sin(angle);
-  const c = Math.cos(angle);
+  const s = sin(angle);
+  const c = cos(angle);
   return new Float32Array([1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1]);
 }
 
 export function rotateAroundY(angle: number): GlMatrix {
-  const s = Math.sin(angle);
-  const c = Math.cos(angle);
+  const s = sin(angle);
+  const c = cos(angle);
   return new Float32Array([c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1]);
 }
 
 export function rotateAroundZ(angle: number): GlMatrix {
-  const s = Math.sin(angle);
-  const c = Math.cos(angle);
+  const s = sin(angle);
+  const c = cos(angle);
   return new Float32Array([c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 }
