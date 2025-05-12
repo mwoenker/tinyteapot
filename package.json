@@ -7,7 +7,8 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "bundle": "mkdir -p build/scripts && cp assets/index.html build && esbuild src/index.ts --bundle --outfile=build/scripts/index.js",
-    "bundle-min": "mkdir -p build/scripts && cp assets/index.html build && esbuild src/index.ts --bundle --minify --mangle-props=_$ --outfile=build/scripts/index.js --target=esnext --format=esm"
+    "bundle-min": "mkdir -p build/scripts && cp assets/index.html build && esbuild src/index.ts --bundle --minify --mangle-props=_$ --outfile=build/scripts/index.js --target=esnext --format=esm",
+    "bundle-combined": "npm run bundle-min && node scripts/buildHtml.js"
   },
   "author": "",
   "license": "UNLICENSED",

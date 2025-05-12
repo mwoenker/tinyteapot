@@ -6,14 +6,15 @@ import { createTeapotMeshes } from "./teapotPatchesQuantized.js";
 
 interface Controller {
   renderFrame_: () => void;
-  update_: () => void;
   run_: () => void;
   stop_: () => void;
 }
 
+const now = Date.now;
+
 export function makeController(canvas: HTMLCanvasElement): Controller {
   let running = false;
-  let theta = 0;
+  let startTime = now();
 
   const meshes: Mesh[] = createTeapotMeshes(15);
   const gl = canvas.getContext("webgl2");
@@ -44,6 +45,8 @@ export function makeController(canvas: HTMLCanvasElement): Controller {
 
   const result = {
     renderFrame_() {
+      const t = now();
+      const theta = 4e-4 * (t - startTime);
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -56,10 +59,6 @@ export function makeController(canvas: HTMLCanvasElement): Controller {
       gl.drawElements(gl.LINES, indexesBuffer.length, gl.UNSIGNED_SHORT, 0);
     },
 
-    update_() {
-      theta += 0.005;
-    },
-
     run_() {
       running = true;
       requestAnimationFrame(() => {
@@ -67,7 +66,6 @@ export function makeController(canvas: HTMLCanvasElement): Controller {
           return;
         }
         result.renderFrame_();
-        result.update_();
         result.run_();
       });
     },
