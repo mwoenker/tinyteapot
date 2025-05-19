@@ -5,7 +5,7 @@ const rotationUniformName = "r";
 const aspectRatioUniformName = "a";
 const positionAttributeName = "p";
 
-const vertexProgram = `uniform mat4 ${rotationUniformName};uniform float ${aspectRatioUniformName};attribute vec3 ${positionAttributeName};void main(){vec4 t=${rotationUniformName}*vec4(${positionAttributeName},1)+vec4(0,0,-35,0);gl_Position=vec4(t.x/t.z*${aspectRatioUniformName},t.y/t.z,t.z/100.0,1);}`;
+const vertexProgram = `uniform mat4 ${rotationUniformName};uniform float ${aspectRatioUniformName};attribute vec3 ${positionAttributeName};void main(){vec4 t=${rotationUniformName}*vec4(${positionAttributeName},1)+vec4(0,0,-35,0);gl_Position=vec4(t.x*${aspectRatioUniformName},t.y,2,-t.z);}`;
 
 const fragmentProgram = `void main(){gl_FragColor=vec4(1.0,1.0,1.0,1.0);}`;
 
