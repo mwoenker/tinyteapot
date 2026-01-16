@@ -1,4 +1,4 @@
-import { Mesh, MeshLine } from "./mesh.js";
+import { Mesh } from "./mesh.js";
 import { v3add, v3scale, Vec2, Vec3 } from "./vector.js";
 type Corners = [[Vec3, Vec3], [Vec3, Vec3]];
 
@@ -45,7 +45,7 @@ export function cubicPatchToMesh(
     row * (tSubdivisions + 1) + col;
 
   const points: Vec3[] = [];
-  const lines: MeshLine[] = [];
+  const indexes: number[] = [];
 
   for (let row = 0; row <= sSubdivisions; ++row) {
     const s = row / sSubdivisions;
@@ -58,22 +58,18 @@ export function cubicPatchToMesh(
   // row lines
   for (let row = 0; row <= sSubdivisions; ++row) {
     for (let col = 0; col < tSubdivisions; ++col) {
-      lines.push({
-        start_: pointIndex(row, col),
-        end_: pointIndex(row, col + 1),
-      });
+      indexes.push(pointIndex(row, col));
+      indexes.push(pointIndex(row, col + 1));
     }
   }
 
   // column lines
   for (let col = 0; col <= tSubdivisions; ++col) {
     for (let row = 0; row < sSubdivisions; ++row) {
-      lines.push({
-        start_: pointIndex(row, col),
-        end_: pointIndex(row + 1, col),
-      });
+      indexes.push(pointIndex(row, col));
+      indexes.push(pointIndex(row + 1, col));
     }
   }
 
-  return { lines_: lines, points_: points };
+  return { indexes_: indexes, points_: points };
 }

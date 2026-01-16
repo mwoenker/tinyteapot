@@ -105,11 +105,6 @@ export function bindShaderAndGeometry(
   positions: Float32Array,
   indexes: Uint16Array,
 ): ShaderParameterLocations {
-  if (positions.length >= 1 << 16) {
-    //die("Too many vertices");
-    die();
-  }
-
   const program = createShaderProgram(gl);
   const vertexPositionAttrib = attribLocation(
     gl,
